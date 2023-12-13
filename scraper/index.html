@@ -1,0 +1,65 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @font-face {
+            font-family: 'minion-pro'; /* A name for the font */
+            src: url('minion-pro-regular.ttf') format('truetype'); /* path to your font file */
+        }
+        #passage {
+            font-family: "minion-pro";
+            font-size: 16px;
+            width: 433.5px;
+            text-indent: 20px;
+        }
+    </style>
+</head>
+<body>
+    <p id="passage"></p>
+    <p id="lines"></p>
+    <script>
+        function wrapWordsWithSpans(element) {
+            // Replace each word with a span wrapped word
+            element.innerHTML = element.textContent.split(/\s+/).map(word => `<span class="word">${word} </span>`).join('');
+        }
+
+        function identifyLines(element) {
+            let lines = [];
+            let currentLine = [];
+            let lastOffsetTop;
+
+            element.querySelectorAll('.word').forEach(span => {
+                let top = span.offsetTop;
+                if (lastOffsetTop === undefined) {
+                    lastOffsetTop = top;
+                }
+
+                if (top !== lastOffsetTop) {
+                    // New line detected
+                    lines.push(currentLine.join(' '));
+                    currentLine = [];
+                }
+
+                currentLine.push(span.textContent.trim());
+                lastOffsetTop = top;
+            });
+
+            // Add the last line if it's not empty
+            if (currentLine.length) {
+                lines.push(currentLine.join(' '));
+            }
+
+            return lines;
+        }
+
+        // Example usage:
+        const passageEl = document.getElementById("passage");
+        passageEl.innerText = decodeURIComponent(location.search.slice(1));
+        wrapWordsWithSpans(passageEl);
+        const lines = identifyLines(passageEl);
+        document.getElementById("lines").innerText = JSON.stringify(lines);
+    </script>
+</body>
+</html>
