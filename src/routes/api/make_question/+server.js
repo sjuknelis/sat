@@ -18,7 +18,7 @@ ${question.question_item.question}
 ${question.question_item.answers.map((answer, index) => `${["A", "B", "C", "D"][index]}. ${answer}`).join("\n")}
 Correct answer: ${["A", "B", "C", "D"][question.question_item.correct_answer_index]}
 
-Please create a difficult question in the style of this question for this passage. Provide the correct answer. When listing the answer choices, do not include any letter prefixes like "A."
+Please create a difficult question in the style of this question for this passage${question.question_item.category ? ` in this category: ${question.question_item.category}` : ""}. Provide the correct answer. When listing the answer choices, do not include any letter prefixes like "A."
 Represent the question in JSON format as follows, and don't include anything other than the JSON representation in your response: {question: string, answers: string[], correct_answer_index: number}
     `.trim();
 

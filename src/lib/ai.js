@@ -7,9 +7,9 @@ const chatgpt = new OpenAI({
     apiKey: readFileSync("apikey.txt").toString()
 });
 
-async function runGptPrompt(jsonMode, gptFour, prompt) {
+async function runGptPrompt(jsonMode, model, prompt) {
     let properties = {
-        model: gptFour ? "gpt-4-1106-preview" : "ft:gpt-3.5-turbo-1106:personal::8UbLB1cc",
+        model,
         messages: [{role: "user", content: prompt.trim()}]
     };
     if (jsonMode) properties.response_format = {
@@ -21,7 +21,7 @@ async function runGptPrompt(jsonMode, gptFour, prompt) {
 }
 
 export async function makePassage(type) {
-    const data = await runGptPrompt(true, false, `
+    const data = await runGptPrompt(true, "gpt-3.5-turbo-1106", `
 Generate an SAT reading passage of at least 45 lines with the following type: ${type}.
 Provide this passage as a JSON array of strings, where each string is one line, as follows: {passage: string[]}.
 The response should contain nothing but the passage in its JSON format, broken up into reasonably sized lines (at least 8 words per line).
@@ -32,7 +32,7 @@ It is critical that the passage be at least 45 lines long and that each line is 
 }
 
 export async function makeQuestions(passage, count, category) {
-    const data = await runGptPrompt(true, false, `
+    const data = await runGptPrompt(true, "ft:gpt-3.5-turbo-1106:personal::8UbLB1cc", `
 Here is an SAT reading passage:
 ${passage.map((line, index) => `${index + 1} ${line}`).join("\n")}
 
@@ -44,14 +44,14 @@ Represent the question in JSON array format as follows, and don't include anythi
 }
 
 export async function makeDataGraph(passage) {
-    const description = await runGptPrompt(false, true, `
+    const description = await runGptPrompt(false, "gpt-4-1106-preview", `
 Here is an SAT reading passage:
 ${passage.map((line, index) => `${index + 1} ${line}`).join("\n")}
 
 Describe a potential graph that could go with this passage. Include in your description all data and labels that would be placed on this graph. Someone should be able to create the graph in its entirety from this description.
     `);
 
-    let code = await runGptPrompt(false, true, `
+    let code = await runGptPrompt(false, "gpt-4-1106-preview", `
 Here is an SAT reading passage:
 ${passage.map((line, index) => `${index + 1} ${line}`).join("\n")}
 
@@ -86,7 +86,7 @@ Do not output anything other than the Python code. Do not include any explanatio
 }
 
 export async function makeDataQuestions(description) {
-    const data = await runGptPrompt(true, true, `
+    const data = await runGptPrompt(true, "gpt-4-1106-preview", `
 Here is a description of a graph included with an SAT reading passage:
 ${description}
 
