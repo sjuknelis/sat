@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import {readFileSync} from "fs";
-import {mkdir, writeFile} from "fs/promises";
+import {mkdir, readFile, writeFile} from "fs/promises";
 import {exec} from "child_process";
 
 const chatgpt = new OpenAI({
@@ -32,6 +32,16 @@ It is critical that the passage be at least 45 lines long and that each line is 
 }
 
 export async function makeQuestions(passage, count, category) {
+    /* Potential context string creator for GPT 4
+    
+    let contextQuestions = [];
+    const files = ["5-1", "5-2", "5-3", "5-4", "5-5"];
+    for ( const file of files ) {
+        contextQuestions.push(...JSON.parse((await readFile(`data/${file}.json`)).toString()).question_set)
+    }
+    contextQuestions = contextQuestions.filter(question => question.category.startsWith(category));
+    const contextString = `Here are some example questions of the category ${category}:\n` + contextQuestions.map(question => JSON.stringify(question)).join("\n");*/
+
     const data = await runGptPrompt(true, "ft:gpt-3.5-turbo-1106:personal::8UbLB1cc", `
 Here is an SAT reading passage:
 ${passage.map((line, index) => `${index + 1} ${line}`).join("\n")}

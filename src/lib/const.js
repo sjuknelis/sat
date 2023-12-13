@@ -1,5 +1,9 @@
 const PASSAGE_IDS = [
-    "5-1"
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5"
 ];
 
 const PASSAGE_TYPES = [
@@ -16,8 +20,7 @@ const SKILLS = [
     "Vocabulary in Context",
     "Analogies",
     "Author Technique",
-    "Evidence Support",
-    "Data Reasoning"
+    "Evidence Support"
 ];
 
 export {PASSAGE_IDS, PASSAGE_TYPES, SKILLS};
